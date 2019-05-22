@@ -7,6 +7,7 @@ import ReactDOM from "react-dom";
 import styles from "./Table.css";
 
 import ExplicitSize from "metabase/components/ExplicitSize.jsx";
+import Tooltip from "metabase/components/Tooltip.jsx";
 import Ellipsified from "metabase/components/Ellipsified.jsx";
 import Icon from "metabase/components/Icon.jsx";
 import MiniBar from "./MiniBar";
@@ -98,6 +99,7 @@ export default class TableSimple extends Component {
       isPivoted,
       settings,
       getColumnTitle,
+      getColumnDescription,
     } = this.props;
     const { rows, cols } = data;
     const getCellBackgroundColor = settings["table._cell_background_getter"];
@@ -157,6 +159,9 @@ export default class TableSimple extends Component {
                           }}
                         />
                         <Ellipsified>{getColumnTitle(colIndex)}</Ellipsified>
+                        <Tooltip tooltip={getColumnDescription(colIndex)} maxWidth={"22em"}>
+                          <Icon name="info" />
+                        </Tooltip>
                       </div>
                     </th>
                   ))}

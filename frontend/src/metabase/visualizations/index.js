@@ -45,6 +45,7 @@ export function registerVisualization(visualization) {
         visualization.name,
     );
   }
+  console.info("identifier", identifier)
   visualizations.set(identifier, visualization);
   for (let alias of visualization.aliases || []) {
     aliases.set(alias, visualization);

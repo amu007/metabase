@@ -47,6 +47,8 @@ export class Dashboard extends Component {
         loading={!dashboard}
         noBackground
       >
+        console.log("===============")
+        console.log(this.props)
         {() => <DashboardGrid {...this.props} className={"spread"} />}
       </LoadingAndErrorWrapper>
     );

@@ -166,6 +166,11 @@ export default class Table extends Component {
         widget: "input",
         getDefault: column => formatColumn(column),
       },
+      column_description: {
+        title: t`Column description`,
+        widget: "input",
+        getDefault: column => formatColumn(column),
+      },
     };
     if (isNumber(column)) {
       settings["show_mini_bar"] = {
@@ -308,6 +313,23 @@ export default class Table extends Component {
     }
   };
 
+  getColumnDescription = (columnIndex: number): ?string => {
+    const cols = this.state.data && this.state.data.cols;
+    if (!cols) {
+      return null;
+    }
+    const { settings } = this.props;
+    const isPivoted = settings["table.pivot"];
+    const column = cols[columnIndex];
+    if (isPivoted) {
+      return formatColumn(column) || (columnIndex !== 0 ? t`Unset` : null);
+    } else {
+      return (
+        settings.column(column)["column_description"] || formatColumn(column)
+      );
+    }
+  };
+
   render() {
     const { card, isDashboard, settings } = this.props;
     const { data } = this.state;
@@ -347,6 +369,7 @@ export default class Table extends Component {
           isPivoted={isPivoted}
           sort={sort}
           getColumnTitle={this.getColumnTitle}
+          getColumnDescription={this.getColumnDescription}
         />
       );
     }
