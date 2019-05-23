@@ -47,9 +47,6 @@ const SortableColumnList = SortableContainer(
 
 export default class ChartSettingOrderedColumns extends Component {
   handleEnable = columnSetting => {
-    console.log("EEEE12")
-    console.log(columnSetting)
-
     const columnSettings = [...this.props.value];
     const index = columnSetting.index;
     columnSettings[index] = { ...columnSettings[index], enabled: true };
@@ -70,9 +67,6 @@ export default class ChartSettingOrderedColumns extends Component {
   };
 
   handleEdit = columnSetting => {
-    console.log("EEEE2")
-    console.log(this.props.columns)
-    console.log(columnSetting)
     const column = findColumnForColumnSetting(
       this.props.columns,
       columnSetting,
@@ -88,7 +82,6 @@ export default class ChartSettingOrderedColumns extends Component {
   };
 
   handleAddNewField = fieldRef => {
-    console.log("EEEE32")
     const { value, onChange, addField } = this.props;
     onChange([
       // remove duplicates

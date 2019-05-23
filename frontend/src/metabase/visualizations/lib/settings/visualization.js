@@ -35,7 +35,6 @@ function getSettingDefintionsForSeries(series: ?Series): SettingDefs {
     return {};
   }
   const { CardVisualization } = getVisualizationRaw(series);
-  console.info("getVisualizationRaw(series)", getVisualizationRaw(series))
   const definitions = {
     ...COMMON_SETTINGS,
     ...(CardVisualization.settings || {}),

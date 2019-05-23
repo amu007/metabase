@@ -36,7 +36,6 @@ const withTransientSettingState = ComposedComponent =>
 
     componentWillReceiveProps(nextProps) {
       if (this.props.settings !== nextProps.settings) {
-        console.log(nextProps.settings)
         this.setState({ settings: nextProps.settings });
       }
     }
@@ -121,7 +120,6 @@ class ChartSettings extends Component {
     const widgetsById = {};
 
     const sections = {};
-    console.info("transformedSeries:", transformedSeries)
     for (const widget of getSettingsWidgetsForSeries(
       transformedSeries,
       this.handleChangeSettings,
@@ -149,13 +147,6 @@ class ChartSettings extends Component {
 
     let widgets;
     let widget = currentWidget && widgetsById[currentWidget.id];
-    console.info("#@#render:", currentWidget)
-    if (currentWidget) {
-      console.info(currentWidget.id)
-      console.info(widget)
-      console.info(widgetsById)
-    }
-
     if (widget) {
       widget = {
         ...widget,
@@ -166,8 +157,6 @@ class ChartSettings extends Component {
         },
       };
       widgets = [widget];
-      console.info("#@#render2:")
-      console.info(widget)
     } else {
       widgets = sections[currentSection];
     }
@@ -190,9 +179,7 @@ class ChartSettings extends Component {
         underlined
       />
     );
-    console.log("bbbbbbbbbbbbbbbbb")
-    console.log(widgets)
-    console.log(widgets[0]["widget"])
+
     const widgetList = widgets.map(widget => (
       <ChartSettingsWidget
         key={`${widget.id}`}
@@ -200,8 +187,7 @@ class ChartSettings extends Component {
         {...extraWidgetProps}
       />
     ));
-    console.log("bbbbbbbbbbbbbbbbaa")
-    console.log(widgetList)
+
     const onReset = !_.isEqual(settings, {}) ? this.handleResetSettings : null;
 
     // custom render prop layout:
@@ -215,9 +201,7 @@ class ChartSettings extends Component {
         onReset: onReset,
       });
     }
-    console.log("children")
-    console.log(children)
-    console.log(widgetList)
+
     // default layout with visualization
     return (
       <div className="flex flex-column spread">

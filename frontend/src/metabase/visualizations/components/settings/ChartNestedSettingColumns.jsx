@@ -22,10 +22,7 @@ export default class ChartNestedSettingColumns extends React.Component {
       objectSettingsWidgets,
       object,
     } = this.props;
-    console.info("!!!!!" + objects.length)
-    console.info(objects)
-    console.info(object)
-    console.info(objectSettingsWidgets)
+
     if (object) {
       return (
         <div>

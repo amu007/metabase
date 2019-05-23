@@ -13,7 +13,6 @@ import cx from "classnames";
 
 export default class VisualizationSettings extends React.Component {
   constructor(props, context) {
-    console.log("#6")
     super(props, context);
   }
 
@@ -26,16 +25,12 @@ export default class VisualizationSettings extends React.Component {
   };
 
   setDisplay = type => {
-    console.log("#4")
     // notify our parent about our change
     this.props.setDisplayFn(type);
     this.refs.displayPopover.toggle();
   };
 
   renderChartTypePicker() {
-    console("#5")
-    console(question.card())
-    console(result.data)
     let { result, question } = this.props;
     let { CardVisualization } = getVisualizationRaw([
       { card: question.card(), data: result.data },
@@ -90,17 +85,14 @@ export default class VisualizationSettings extends React.Component {
   }
 
   open = initial => {
-    console.log("#1")
     this.props.showChartSettings(initial || {});
   };
 
   close = () => {
-    console.log("#2")
     this.props.showChartSettings(null);
   };
 
   render() {
-    console.log("#3")
     if (this.props.result && this.props.result.error === undefined) {
       const { chartSettings } = this.props.uiControls;
       return (
