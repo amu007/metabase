@@ -325,7 +325,7 @@ export default class Table extends Component {
       return formatColumn(column) || (columnIndex !== 0 ? t`Unset` : null);
     } else {
       return (
-        settings.column(column)["column_description"] || formatColumn(column)
+        settings.column(column)["column_description"]
       );
     }
   };

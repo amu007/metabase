@@ -147,7 +147,7 @@ export default class TableSimple extends Component {
                       )}
                       onClick={() => this.setSort(colIndex)}
                     >
-                      <div className="relative">
+                      <div className="flex align-center float-right">
                         <Icon
                           name={sortDescending ? "chevrondown" : "chevronup"}
                           width={8}
@@ -158,10 +158,13 @@ export default class TableSimple extends Component {
                             marginRight: 3,
                           }}
                         />
+
                         <Ellipsified>{getColumnTitle(colIndex)}</Ellipsified>
-                        <Tooltip tooltip={getColumnDescription(colIndex)} maxWidth={"22em"}>
-                          <Icon name="info" />
-                        </Tooltip>
+                        {getColumnDescription(colIndex) ?
+                          (<Tooltip tooltip={getColumnDescription(colIndex)} maxWidth={"22em"}>
+                            <Icon name="info" />
+                          </Tooltip>)
+                        :""}
                       </div>
                     </th>
                   ))}
