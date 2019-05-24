@@ -116,6 +116,15 @@ export default class TableSimple extends Component {
         rowIndexes.reverse();
       }
     }
+    console.info(cols)
+    let footer = {}
+    rowIndexes.slice(start, end + 1).map((rowIndex, index) => (
+      rows[rowIndex].map((value, columnIndex) => {
+        if(cols[columnIndex]["special_type"] == "type/Number") {
+          footer[columnIndex] = footer[columnIndex] ? footer[columnIndex]+value : value
+        }
+      })
+    ))
 
     return (
       <div className={cx(this.props.className, "relative flex flex-column")}>
@@ -170,6 +179,35 @@ export default class TableSimple extends Component {
                   ))}
                 </tr>
               </thead>
+              <tfoot ref="header">
+              <tr>
+                {cols.map((col, colIndex) => (
+                  <th
+                    key={colIndex}
+                    className={cx(
+                      "TableInteractive-headerCellData cellData text-brand-hover text-medium",
+                      {
+                        "TableInteractive-headerCellData--sorted":
+                        sortColumn === colIndex,
+                        "text-right": isColumnRightAligned(col),
+                      },
+                    )}
+                  >
+                    <div className="flex align-center float-right">
+                      {colIndex == 0 ? '合计' : (
+                        formatValue(footer[colIndex], {
+                          ...settings.column(col),
+                          type: "cell",
+                          jsx: true,
+                          rich: true,
+                        })
+                      )}
+                    </div>
+
+                  </th>
+                ))}
+              </tr>
+              </tfoot>
               <tbody>
                 {rowIndexes.slice(start, end + 1).map((rowIndex, index) => (
                   <tr key={rowIndex} ref={index === 0 ? "firstRow" : null}>
