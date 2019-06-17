@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Link, withRouter } from "react-router";
 
 import InputBlurChange from "metabase/components/InputBlurChange.jsx";
+import NumericInput from "metabase/components/NumericInput.jsx";
 import Select, { Option } from "metabase/components/Select.jsx";
 import Icon from "metabase/components/Icon";
 import { t } from "ttag";
@@ -47,6 +48,8 @@ export default class Column extends Component {
   onVisibilityChange = ({ id: visibility_type }) =>
     this.updateField({ visibility_type });
 
+  onPositionChange = value => this.updateProperty("position", value);
+
   render() {
     const { field, idfields } = this.props;
 
@@ -63,19 +66,26 @@ export default class Column extends Component {
             />
             <div className="clearfix">
               <div className="flex flex-full">
-                <div className="flex-full px1">
+                <div style={{ flex: "0.4" }} className="px1">
                   <FieldVisibilityPicker
                     className="block"
                     field={field}
                     updateField={this.updateField}
                   />
                 </div>
-                <div className="flex-full px1">
+                <div style={{ flex: "0.4" }} className="px1">
                   <SpecialTypeAndTargetPicker
                     className="block"
                     field={field}
                     updateField={this.updateField}
                     idfields={idfields}
+                  />
+                </div>
+                <div style={{ flex: "0.2" }} className="bordered rounded">
+                  <NumericInput
+                    className="AdminInput TableEditor-field-position text-bold"
+                    value={this.props.field.position.toString()}
+                    onChange={this.onPositionChange}
                   />
                 </div>
               </div>
