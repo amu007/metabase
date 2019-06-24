@@ -5,13 +5,13 @@ import ColumnItem from "./ColumnItem.jsx";
 
 export default class ColumnsList extends Component {
   static propTypes = {
-    tableMetadata: PropTypes.object,
+    fields: PropTypes.array,
     idfields: PropTypes.array,
     updateField: PropTypes.func.isRequired,
   };
 
   render() {
-    let { tableMetadata } = this.props;
+    const { fields = [] } = this.props;
     return (
       <div id="ColumnsList" className="my3">
         <h2 className="px1 text-orange">{t`Columns`}</h2>
@@ -20,18 +20,19 @@ export default class ColumnsList extends Component {
             style={{ minWidth: 420 }}
             className="float-left px1"
           >{t`Column`}</div>
-          <div className="flex clearfix">
-            <div className="flex-half px1">{t`Visibility`}</div>
-            <div className="flex-half px1">{t`Type`}</div>
+          <div className="flex">
+            <div style={{ flex: "0.4" }} className="px1">{t`Visibility`}</div>
+            <div style={{ flex: "0.4" }} className="px1">{t`Type`}</div>
+            <div style={{ flex: "0.2" }} className="px1">{t`Position`}</div>
           </div>
         </div>
         <ol className="border-top border-bottom">
-          {tableMetadata.fields.map(field => (
+          {fields.map(field => (
             <ColumnItem
               key={field.id}
               field={field}
-              idfields={this.props.idfields}
               updateField={this.props.updateField}
+              idfields={this.props.idfields}
             />
           ))}
         </ol>

@@ -219,6 +219,10 @@
   margin-left: 0;
 }
 
+.MetadataTable {
+  min-width: 800px;
+}
+
 .MetadataTable-title {
   background-color: var(--color-bg-white);
 }
@@ -264,6 +268,11 @@
 .TableEditor-field-target .ColumnarSelector-row:hover {
   background-color: var(--color-brand) !important;
   color: white !important;
+}
+
+.TableEditor-field-position {
+  font-size: 16px;
+  width: 100%;
 }
 
 .SaveStatus {

@@ -4,6 +4,7 @@
             [clojure.string :as str]
             [clojure.tools.logging :as log]
             [metabase
+             [config :as config]
              [db :as mdb]
              [handler :as handler]
              [plugins :as plugins]
@@ -50,12 +51,16 @@
   {:expectations-options :before-run}
   []
   ;; We can shave about a second from unit test launch time by doing the various setup stages in on different threads
-  ;; Start Jetty in the BG so if test setup fails we have an easier time debugging it -- it's trickier to debug things
-  ;; on a BG thread
-  (let [start-web-server! (future (server/start-web-server! handler/app))]
+  (let [start-web-server!
+        (future
+          (try
+            (server/start-web-server! handler/app)
+            (catch Throwable e
+              (log/error e "Web server failed to start")
+              (System/exit -2))))]
     (try
       (log/info (format "Setting up %s test DB and running migrations..." (name (mdb/db-type))))
-      (mdb/setup-db! :auto-migrate true)
+      (mdb/setup-db!)
 
       (plugins/load-plugins!)
       (load-plugin-manifests!)
@@ -71,15 +76,40 @@
         (log/error (u/format-color 'red "Test setup failed: %s\n%s" e (u/pprint-to-str (vec (.getStackTrace e)))))
         (System/exit -1)))
 
-    @start-web-server!))
+    (u/deref-with-timeout start-web-server! 10000)
+    nil))
 
+(defn- shutdown-threads!
+  "Attempt to shut down any non-daemon threads that are still alive for whatever reason. For some reason lately (6/2019)
+  tests have been hanging on shutdown on occasion -- I think they might be core.async threads. (?)
+
+  Once we resolve the issues and figure out which ones are hanging we can remove this. Logged info below may help
+  debug the issues."
+  []
+  (doseq [[^Thread thread, stacktrace] (Thread/getAllStackTraces)
+          :when                        (and (.isAlive thread)
+                                            (not (.isDaemon thread))
+                                            (not= (.getName thread) "main"))]
+    (println
+     "attempting to shut down thread:"
+     (u/pprint-to-str 'blue
+       {:name        (.getName thread)
+        :state       (.name (.getState thread))
+        :alive?      (.isAlive thread)
+        :interrupted (.isInterrupted thread)
+        :frames      (take 5 stacktrace)}))
+    (try
+      (.interrupt thread)
+      (catch Throwable e
+        (log/error e "Failed to make Thread a daemon thread")))))
 
 (defn test-teardown
   {:expectations-options :after-run}
   []
   (log/info "Shutting down Metabase unit test runner")
   (server/stop-web-server!)
-  (shutdown-agents))
+  (when config/is-test?
+    (shutdown-threads!)))
 
 (defn call-with-test-scaffolding
   "Runs `test-startup` and ensures `test-teardown` is always called. This function is useful for running a test (or test

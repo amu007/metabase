@@ -488,6 +488,10 @@ export default class StructuredQuery extends AtomicQuery {
     return Q.getFilters(this.query());
   }
 
+  filterClause(): ?Filter {
+    return Q.getFilterClause(this.query());
+  }
+
   /**
    * @returns @type {DimensionOptions} that can be used in filters.
    */
@@ -539,14 +543,14 @@ export default class StructuredQuery extends AtomicQuery {
   /**
    * @returns {StructuredQuery} new query with the MBQL @type {Filter} updated at the provided index.
    */
-  updateFilter(index: number, filter: Filter) {
+  updateFilter(index: number[], filter: Filter) {
     return this._updateQuery(Q.updateFilter, arguments);
   }
 
   /**
    * @returns {StructuredQuery} new query with the filter at the provided index removed.
    */
-  removeFilter(index: number) {
+  removeFilter(index: number[]) {
     return this._updateQuery(Q.removeFilter, arguments);
   }
 
@@ -557,6 +561,13 @@ export default class StructuredQuery extends AtomicQuery {
     return this._updateQuery(Q.clearFilters, arguments);
   }
 
+  toggleCompoundFilterOperator(
+    operatorIndex: number,
+    nestedClauseIndex: number[],
+  ) {
+    return this._updateQuery(Q.toggleCompoundFilterOperator, arguments);
+  }
+
   // SORTS
 
   // TODO: standardize SORT vs ORDER_BY terminology
@@ -565,7 +576,7 @@ export default class StructuredQuery extends AtomicQuery {
     return Q.getOrderBys(this.query());
   }
   sortOptions(sort): DimensionOptions {
-    let sortOptions = { count: 0, dimensions: [], fks: [] };
+    const sortOptions = { count: 0, dimensions: [], fks: [] };
     // in bare rows all fields are sortable, otherwise we only sort by our breakout columns
     if (this.isBareRows()) {
       const usedFields = new Set(
@@ -788,7 +799,7 @@ export default class StructuredQuery extends AtomicQuery {
     // NOTE: dimension.columnName() doesn't include suffixes for duplicated column names so we need to do that here
     const nameCounts = new Map();
     return this.columnDimensions().map(dimension => {
-      let name = dimension.columnName();
+      const name = dimension.columnName();
       if (nameCounts.has(name)) {
         const count = nameCounts.get(name) + 1;
         nameCounts.set(name, count);

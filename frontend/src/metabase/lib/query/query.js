@@ -72,14 +72,31 @@ export const getBreakoutFields = (query: SQ, tableMetadata: TableMetadata) =>
 // FILTER
 
 export const getFilters = (query: SQ) => F.getFilters(query.filter);
+export const getFilterClause = (query: SQ) => query.filter;
+
 export const addFilter = (query: SQ, filter: Filter) =>
   setFilterClause(query, F.addFilter(query.filter, filter));
-export const updateFilter = (query: SQ, index: number, filter: Filter) =>
+
+export const updateFilter = (query: SQ, index: number[], filter: Filter) =>
   setFilterClause(query, F.updateFilter(query.filter, index, filter));
-export const removeFilter = (query: SQ, index: number) =>
+export const removeFilter = (query: SQ, index: number[]) =>
   setFilterClause(query, F.removeFilter(query.filter, index));
 export const clearFilters = (query: SQ) =>
   setFilterClause(query, F.clearFilters(query.filter));
+
+export const toggleCompoundFilterOperator = (
+  query: SQ,
+  operatorIndex: number,
+  nestedClauseIndex: number[],
+) =>
+  setFilterClause(
+    query,
+    F.toggleCompoundFilterOperator(
+      query.filter,
+      operatorIndex,
+      nestedClauseIndex,
+    ),
+  );
 
 export const canAddFilter = (query: SQ) => F.canAddFilter(query.filter);
 
@@ -142,8 +159,8 @@ function setAggregationClause(
   query: SQ,
   aggregationClause: ?AggregationClause,
 ): SQ {
-  let wasBareRows = A.isBareRows(query.aggregation);
-  let isBareRows = A.isBareRows(aggregationClause);
+  const wasBareRows = A.isBareRows(query.aggregation);
+  const isBareRows = A.isBareRows(aggregationClause);
   // when switching to or from bare rows clear out any sorting and fields clauses
   if (isBareRows !== wasBareRows) {
     query = clearFields(query);
@@ -156,9 +173,9 @@ function setAggregationClause(
   return setClause("aggregation", query, aggregationClause);
 }
 function setBreakoutClause(query: SQ, breakoutClause: ?BreakoutClause): SQ {
-  let breakoutIds = B.getBreakouts(breakoutClause).filter(id => id != null);
+  const breakoutIds = B.getBreakouts(breakoutClause).filter(id => id != null);
   for (const [index, sort] of getOrderBys(query).entries()) {
-    let sortId = Query.getFieldTargetId(sort[1]);
+    const sortId = Query.getFieldTargetId(sort[1]);
     if (sortId != null && !_.contains(breakoutIds, sortId)) {
       query = removeOrderBy(query, index);
     }
