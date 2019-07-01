@@ -22,6 +22,9 @@ export function getFilters(filter: ?FilterClause): Filter[] {
   } else if (op(filter) === "and" || op(filter) === "or") {
     return args(filter);
   } else {
+    if (filter[2] === "\"\"") {
+      filter[2] = ""
+    }
     return [filter];
   }
 }
