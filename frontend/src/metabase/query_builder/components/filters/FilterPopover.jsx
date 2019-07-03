@@ -333,7 +333,7 @@ export default class FilterPopover extends Component {
 
       const showOperatorSelector = !(isTime(field) || isDate(field));
       const showHeader = showFieldPicker || showOperatorSelector;
-
+      console.info("popover render")
       return (
         <div
           style={{

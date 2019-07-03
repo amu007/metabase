@@ -81,10 +81,12 @@ export default class FilterWidget extends Component {
   };
 
   open = () => {
+    console.info("==open")
     this.setState({ isOpen: true });
   };
 
   close = () => {
+    console.info("==close")
     this.setState({ isOpen: false });
   };
 
@@ -101,6 +103,7 @@ export default class FilterWidget extends Component {
   }
 
   renderPopover() {
+    console.info("==renderPopover")
     if (this.state.isOpen) {
       const { query, filter } = this.props;
       return (
@@ -128,6 +131,7 @@ export default class FilterWidget extends Component {
   }
 
   render() {
+    console.info("==render")
     const { index, removeFilter } = this.props;
     return (
       <div className={cx("Query-filter p1", { selected: this.state.isOpen })}>

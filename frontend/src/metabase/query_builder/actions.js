@@ -1217,15 +1217,19 @@ export const runQuestionQuery = ({
   ignoreCache = false,
   overrideWithCard,
 }: RunQueryParams = {}) => {
+  console.info("===========")
   return async (dispatch, getState) => {
     const questionFromCard = (c: Card): Question =>
       c && new Question(getMetadata(getState()), c);
-
+    console.info("===========1a=", questionFromCard)
+    console.info("===========1b=", overrideWithCard)
     const question: Question = overrideWithCard
       ? questionFromCard(overrideWithCard)
       : getQuestion(getState());
     const originalQuestion: ?Question = getOriginalQuestion(getState());
-
+    console.info("===========1question=", question)
+    console.info("===========getState()=", getState())
+    console.info("===========1originalQuestion=", originalQuestion)
     const cardIsDirty = originalQuestion
       ? question.isDirtyComparedTo(originalQuestion)
       : true;

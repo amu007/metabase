@@ -105,6 +105,7 @@ export default class TokenField extends Component {
   static propTypes = {
     value: PropTypes.array,
     options: PropTypes.array,
+    origin_options: PropTypes.array,
     placeholder: PropTypes.string,
     autoFocus: PropTypes.bool,
     multi: PropTypes.bool,

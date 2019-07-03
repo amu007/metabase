@@ -251,10 +251,25 @@ export class FieldValuesWidget extends Component {
     }
 
     let options = [];
+    let origin_options = []
     if (this.hasList()) {
-      options = field.values;
+      origin_options = field.values;
+      // BEGIN add by amu007
+      console.info("===options==", options)
+      console.info("===field.values==", field.values)
+      let opt1;
+      for (opt1 in origin_options) {
+        if (origin_options[opt1] instanceof Array && origin_options[opt1][0]["key"]) {
+          options.push([origin_options[opt1][0]["key"]])
+        } else {
+          options.push(origin_options[opt1])
+        }
+      }
+      console.info("==options=2 ", options)
+      // END add by amu007
     } else if (this.isSearchable() && loadingState === "LOADED") {
       options = this.state.options;
+      options = this.state.origin_options;
     } else {
       options = [];
     }
@@ -280,6 +295,7 @@ export class FieldValuesWidget extends Component {
           }}
           updateOnInputChange
           options={options}
+          origin_options={origin_options}
           // $FlowFixMe
           valueKey={0}
           valueRenderer={value => (

@@ -117,7 +117,7 @@ export default class TableSimple extends Component {
       }
     }
     console.info(cols)
-    let footer = {}
+    const footer = {}
     rowIndexes.slice(start, end + 1).map((rowIndex, index) => (
       rows[rowIndex].map((value, columnIndex) => {
         if(cols[columnIndex]["special_type"] == "type/Number") {

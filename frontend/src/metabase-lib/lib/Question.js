@@ -6,6 +6,8 @@ import Metadata from "./metadata/Metadata";
 import Table from "./metadata/Table";
 import Field from "./metadata/Field";
 
+// import Fields from "metabase/entities/fields";
+
 import StructuredQuery, {
   STRUCTURED_QUERY_TEMPLATE,
 } from "./queries/StructuredQuery";
@@ -54,6 +56,7 @@ import {
   ALERT_TYPE_ROWS,
   ALERT_TYPE_TIMESERIES_GOAL,
 } from "metabase-lib/lib/Alert";
+import { fetchFieldValues } from "metabase/redux/metadata";
 
 type QuestionUpdateFn = (q: Question) => ?Promise<void>;
 
@@ -512,14 +515,15 @@ export default class Question {
     // TODO Atte Keinänen 7/5/17: Should we clean this query with Query.cleanQuery(query) before executing it?
 
     const canUseCardApiEndpoint = !isDirty && this.isSaved();
-
+    console.info("==========1", this.parametersList())
     const parameters = this.parametersList()
       // include only parameters that have a value applied
       .filter(param => _.has(param, "value"))
       // only the superset of parameters object that API expects
       .map(param => _.pick(param, "type", "target", "value"));
-
+    console.info("==========2", parameters)
     if (canUseCardApiEndpoint) {
+      console.info("==========3")
       const queryParams = {
         cardId: this.id(),
         ignore_cache: ignoreCache,
@@ -532,12 +536,32 @@ export default class Question {
         }),
       ];
     } else {
+
       const getDatasetQueryResult = datasetQuery => {
         const datasetQueryWithParameters = {
           ...datasetQuery,
           parameters,
         };
+        console.info("==========4 datasetQueryWithParameters= ", datasetQueryWithParameters["query"]["filter"])
+        console.info("==========4 datasetQueryWithParameters= ", datasetQueryWithParameters["query"]["filter"][1][1])
+        console.info("==========4 datasetQueryWithParameters= ", Field)
+        console.info("==========4 _metadata= ", this._metadata)
+        console.info("==========4 _metadata[\"fields\"]=1 ", this._metadata["fields"])
+        console.info("==========4 _metadata[\"fields\"]=2 ", this._metadata["fields"][751])
+        console.info("==========4 _metadata[\"fields\"]=3 ", this._metadata["fields"][751].values)
 
+        const values = this._metadata["fields"][datasetQueryWithParameters["query"]["filter"][1][1]].values
+
+        console.info("==========4 _metadata[\"fields\"]=4 ", values)
+        let opt1;
+        for (opt1 in origin_options) {
+          if (origin_options[opt1] instanceof Array && origin_options[opt1][0]["key"]) {
+            options.push([origin_options[opt1][0]["key"]])
+          }
+        }
+
+        fetchFieldValues(751)
+        console.info("===5", fetchFieldValues(751, true))
         return MetabaseApi.dataset(
           datasetQueryWithParameters,
           cancelDeferred ? { cancelled: cancelDeferred.promise } : {},
